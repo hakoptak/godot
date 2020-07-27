@@ -105,8 +105,13 @@ static ViewController *mainViewController = nil;
 		}
 	}
 
-	// prevent to stop music in another background app
-	[[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryAmbient error:nil];
+	// Prevent to stop music in another background app
+	[[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryAmbient error:&error];
+
+	if (error != nil)
+	{
+		NSLog(@"Audio category error: %zd" + error.code);
+	}
 
 	return YES;
 };
