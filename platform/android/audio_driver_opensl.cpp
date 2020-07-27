@@ -242,6 +242,20 @@ Error AudioDriverOpenSL::capture_init_device() {
 	SLresult res = (*EngineItf)->CreateAudioRecorder(EngineItf, &recorder, &recSource, &recSnk, 2, ids, req);
 	ERR_FAIL_COND_V(res != SL_RESULT_SUCCESS, ERR_CANT_OPEN);
 
+	if (GLOBAL_GET("audio/raw_input_stream"))
+	{
+		SLAndroidConfigurationItf configItf;
+
+		res = (*recorder)->GetInterface(recorder, SL_IID_ANDROIDCONFIGURATION, &configItf);
+		ERR_FAIL_COND_V(res != SL_RESULT_SUCCESS, ERR_CANT_OPEN);
+
+		// This preset disables device-specific digital signal processing that may add latency to the input path
+		SLuint32 recPreset = SL_ANDROID_RECORDING_PRESET_VOICE_RECOGNITION;
+
+		res = (*configItf)->SetConfiguration(configItf, SL_ANDROID_KEY_RECORDING_PRESET, &recPreset, sizeof(SLuint32));
+		ERR_FAIL_COND_V(res != SL_RESULT_SUCCESS, ERR_CANT_OPEN);
+	}
+
 	res = (*recorder)->Realize(recorder, SL_BOOLEAN_FALSE);
 	ERR_FAIL_COND_V(res != SL_RESULT_SUCCESS, ERR_CANT_OPEN);
 
