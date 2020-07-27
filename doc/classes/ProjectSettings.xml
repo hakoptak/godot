@@ -251,7 +251,7 @@
 			If [code]true[/code], microphone input will be allowed. This requires appropriate permissions to be set when exporting to Android or iOS.
 		</member>
 		<member name="audio/raw_input_stream" type="bool" setter="" getter="" default="false">
-			If [code]true[/code], microphone input will not be filtered. Use this feature if you need low latency input processing. Works only on mobile.
+			If [code]true[/code], microphone input will not be filtered. Use this feature when you need low latency input processing. Works on Android and iOS only.
 		</member>
 		<member name="audio/mix_rate" type="int" setter="" getter="" default="44100">
 			Mixing rate used for audio. In general, it's better to not touch this and leave it to the host operating system.
