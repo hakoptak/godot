@@ -418,6 +418,17 @@ Error AudioDriverCoreAudio::capture_init() {
 	result = AudioUnitSetProperty(input_unit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Output, kInputBus, &strdesc, sizeof(strdesc));
 	ERR_FAIL_COND_V(result != noErr, FAILED);
 
+	if (GLOBAL_GET("audio/raw_input_stream"))
+	{
+		NSError *modeError;
+
+		// This mode minimizes the amount of system-supplied signal processing to input and output signals
+		if ([[AVAudioSession sharedInstance] setMode:AVAudioSessionModeMeasurement error:&modeError] == NO)
+		{
+			NSLog(@"Audio mode error: %zd" + modeError.code);
+		}
+	}
+
 	AURenderCallbackStruct callback;
 	zeromem(&callback, sizeof(AURenderCallbackStruct));
 	callback.inputProc = &AudioDriverCoreAudio::input_callback;
