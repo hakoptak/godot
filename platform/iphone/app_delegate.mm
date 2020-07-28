@@ -92,25 +92,23 @@ static ViewController *mainViewController = nil;
 
 	mainViewController = viewController;
 
-	NSError *error;
-
 	if (GLOBAL_GET("audio/raw_input_stream"))
 	{
-		// This mode minimizes the amount of system-supplied signal processing to input and output signals
-		[[AVAudioSession sharedInstance] setMode:AVAudioSessionModeMeasurement error:&error];
+		NSError *modeError;
 
-		if (error != nil)
+		// This mode minimizes the amount of system-supplied signal processing to input and output signals
+		if ([[AVAudioSession sharedInstance] setMode:AVAudioSessionModeMeasurement error:&modeError] == NO)
 		{
-			NSLog(@"Audio mode error: %zd" + error.code);
+			NSLog(@"Audio mode error: %zd" + modeError.code);
 		}
 	}
 
-	// Prevent to stop music in another background app
-	[[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryAmbient error:&error];
+	NSError *categoryError;
 
-	if (error != nil)
+	// Prevent to stop music in another background app
+	if ([[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryAmbient error:&categoryError] == NO)
 	{
-		NSLog(@"Audio category error: %zd" + error.code);
+		NSLog(@"Audio category error: %zd" + categoryError.code);
 	}
 
 	return YES;
